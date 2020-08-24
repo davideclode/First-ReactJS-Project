@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -11,7 +9,12 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+/* Esse nosso arquivo "index.tsx" utiliza o 'react-dom' para renderizar a nossa aplicação
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+
+dentro de um elemento da dom "getElementById" que neste caso tem a div chamada "root".
+
+O "React.StrictMode" é utilizada para poder melhorar a tratativa de erros
+*/
