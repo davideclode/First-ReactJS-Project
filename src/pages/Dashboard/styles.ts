@@ -97,7 +97,8 @@ export const Repositories = styled.div`
 
         /*  A "div" contém o título e a descrição do repositório */
         div {
-            margin-left: 16px;
+            margin: 0 16px;
+            flex: 1;
 
             strong {
                 font-size: 20px;

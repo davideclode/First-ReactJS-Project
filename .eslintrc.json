@@ -19,6 +19,7 @@
         "sourceType": "module"
     },
     "plugins": [
+        "react",
         "@typescript-eslint",
         "prettier",
         "react-hooks"
@@ -28,7 +29,8 @@
         "error",
         "ignorePackages",
         {
-          "ts": "never"
+          "ts": "never",
+          "tsx": "never"
         }
       ],
       "prettier/prettier": "error"
@@ -41,5 +43,11 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "@typescrpt-eslint/explicit-function-return-type": [
+        "error",
+        {
+            "allowExpressions": true
+        }
+    ]
 }
