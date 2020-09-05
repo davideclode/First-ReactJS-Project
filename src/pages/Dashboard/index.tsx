@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState,useEffect, FormEvent } from 'react';
 // Importamos "FiChevronRight" depois de instalar "yarn add react-icons"
 import { FiChevronRight } from 'react-icons/fi'
 import api from '../../services/api';
@@ -34,7 +34,32 @@ const Dashboard: React.FC = () => {
 
     // Estado que vai armazenar o meu repositorio. Icializamos o estado com valor vazio"useState([])"
     // "repositories" é o valor do estado em si; "setRepositories" é a variável que useremos toda vez que a gente quer mudar o valor do estado
-    const [repositories, setRepositories] = useState<Repository[]>([]);
+    // Ler a anotação em baixo!!!!
+    const [repositories, setRepositories] = useState<Repository[]>(() => {
+        // Pegamos os repositórios que estão no localStorage.
+        const storagedRepositories = localStorage.getItem('@GithubExplorer: repositories');
+        // Se a variável estivel no local storage, então:
+        if (storagedRepositories) {
+            // "JSON.parse" porque quando estavamos salvando no "localStorage" convertemos a variavel repositories para JSON("JSON.stringify(repositories)"). Agora que estamos buscando a variável repositories, precisamos converté-la de volta para string.
+            return JSON.parse(storagedRepositories);
+        } else {
+            // Retorne um array vazio
+            return [];
+        }
+    });
+
+    // O local storage é uma API assincrona, ou seja, não precisamos usar "async await". Para isso, como a variavel inicial do nosso "Repository" em "useState<Repository[]>([aqui])" é um array vazio então vamos colocar uma função no lugar desse array.
+
+    // O "useEffect" permite que a gente dispare uma função(que a gente envia como primeiro parâmentro {}),sempre que uma variável mudar(variável que a gente envia como segundo parâmetro[]).          useEffect(() =>{},[]);
+    // Sempre que ocorrer uma mudança na variável "repositories", então vou salvá-la no "localStorage"
+    // "@GithubExplorer:" é só um nome para que ele o nosso repositories não conflite com outros repositórios no meu localStorage. Em seguida vem o nome que estamos dando ao reporitório que está sendo guardado.
+    // O "localStorage" não aceita arrays. Portanto vamos usar o JSON.stringify(repositories) para converter o "repositories" numa string.
+    useEffect(() => {
+        localStorage.setItem(
+            '@GithubExplorer: repositories',
+            JSON.stringify(repositories),
+        );
+    }, [repositories]);
 
     // Criação da função para lidar com a adição de novos repositorios aqui dentro
     // Quando submetimos um Form, o HTML ternta nos redirecionar para uma outra página. O que podemos fazer aqui é colocar "event" como retorno de  "handleAddRepository".
