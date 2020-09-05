@@ -1,5 +1,10 @@
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import { shade } from 'polished';
+
+// Por padrão, o elemento Form do HTML não tem a propriedade "hasError" que colocamos lá no Form do arquivo "index.tsx" da pas "Dashboard". Então, precisamos criar uma interface aqui:
+interface FormProps {
+    hasError: boolean;
+}
 
 /* Agora, vamos criar um componente estilizado. Mas ante, precisamos instalar o "yarn add @types/styled-components -D" para que "styled-components" possa ser reconhecido */
 // `` significa "Template literals". É uma string em que colocamos aspas e podemos colocar VARIÁVEIS dentro dela.
@@ -15,7 +20,7 @@ export const Tytle = styled.h1`
 `;
 
 // Fazendo a parte de form. Estamos utilizando o conceito de "Style component" no CSS
-export const Form = styled.form`
+export const Form = styled.form<FormProps>`
     margin-top: 40px;
     max-width: 700px;
 
@@ -32,6 +37,13 @@ export const Form = styled.form`
 
         background: #FFFFFF;
         color: #3a3a3a;
+        border: 2px solid #fff;
+        border-right: 0px;
+        /* No style component, quando colocamos o "template literal $ chaves" quando para incluir uma variável dentro do nosso CSS, se ao inves de incluir uma variável a gente incluir uma função no formato de Arrow function, conseguimos receber dentro dessa nossa função o "props" */
+        /*  Importamos o css em cima para poder usá-la aqui*/
+        ${(props) => props.hasError && css`
+            border-color: pink;
+        `}
 
         &::placeholder {
             color: #A8A8B3;
@@ -63,6 +75,13 @@ export const Form = styled.form`
     }
     /* Poderia criar aqui um button:hover {...} mas resolvi criá-lo dentro do próprio button */
 
+`;
+
+// Tratando a nossa componente Error
+export const Error = styled.span`
+    display: block;
+    color: #c53030;
+    margin-top: 8px;
 `;
 
 export const Repositories = styled.div`

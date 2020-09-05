@@ -6,7 +6,7 @@ import api from '../../services/api';
 import logoImage from '../../assets/logo.svg';
 import Repository from '../Repository';
 
-import { Tytle, Form, Repositories } from './styles';
+import { Tytle, Form, Repositories, Error } from './styles';
 
 // Importantíssimo: Sempre que criarmos um estado"useState" que não é um valor padrão(ex.: array, string, booleano, número) é muito importante definir o tipo desse useState. para que depois quando a gente for utilizar a variável repositories a gente saiba o que é que tem lá dentro. Para isso criamos a interface Repository.
 interface Repository {
@@ -26,6 +26,9 @@ interface Repository {
 // Poderiamos ter feito "const Dashboar() {} " mas vamos utilizar o formato logo abaixo porque facilita o uso da tipagem já que estamos lidando também com typescript.
 /* Para os componentes do React, vamos utilizar sempo "React.FC" que é a abreviação de React.FunctionComponent ou seja componente escrito no formato de função*/
 const Dashboard: React.FC = () => {
+    // Criação de estado que vai controlar o erro
+    const [ inputError, setInputError ] = useState('');
+
     // Criamos estado só para armazenar o valor de input(newRepo) e a função "setNewRepo" para alterar o valor de estado.
     const [ newRepo, setNewRepo ] = useState('');
 
@@ -40,20 +43,36 @@ const Dashboard: React.FC = () => {
     async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
         // console.log(newRepo);
-        // O que vamos fazer aqui? . Vamos ter que ir até api do github; buscar os dados daquele repositório; e depois salvar novo repositório no estado. Resumindo:
-        // Adição de um novo repositorio
-        // Consumir API do Github - buscar os dados daquele repositório
-        // Salvar novo repositorio no estado
 
-        // Chamando a nossa "api". Dentro do get() vai a rota(repos/) e o texto que está digitado dentro do input(newRepo)
-        const response = await api.get<Repository>(`repos/${newRepo}`);
-        // Pegando o repositório
-        const repository = response.data;
-        // Agora podemos utilizar esse API para preencher o nosso array de repositório
-        // Respeitando o conceito de imutabilidade, como queremos só adicionar o repositório(repository) que acabamos de pegar/buscar no final da nossa lista, precisamos copiar a lista toda(...repositories) para não perder os dados que já temos lá dendro e colocar o repositorio(repository) no final.
-        setRepositories([...repositories, repository]);
-        // Para limpar o input fazemos, pegamos o "setNewRepo" e inicializamos o seu valor.
-        setNewRepo('');
+        // Verificando se o conteúdo da variável "newRepo" está vazio
+        if (!newRepo) {
+            // Se estiver vazio, então essa é a mensagem que será mostrada
+            setInputError('Digite o autor/nome do repositório.🙄');
+            return;
+        }
+
+        // Mensagem de erro quando acontecer algo
+        try {
+            // O que vamos fazer aqui? . Vamos ter que ir até api do github; buscar os dados daquele repositório; e depois salvar novo repositório no estado. Resumindo:
+            // Adição de um novo repositorio
+            // Consumir API do Github - buscar os dados daquele repositório
+            // Salvar novo repositorio no estado
+
+            // Chamando a nossa "api". Dentro do get() vai a rota(repos/) e o texto que está digitado dentro do input(newRepo)
+            const response = await api.get<Repository>(`repos/${newRepo}`);
+            // Pegando o repositório
+            const repository = response.data;
+            // Agora podemos utilizar esse API para preencher o nosso array de repositório
+            // Respeitando o conceito de imutabilidade, como queremos só adicionar o repositório(repository) que acabamos de pegar/buscar no final da nossa lista, precisamos copiar a lista toda(...repositories) para não perder os dados que já temos lá dendro e colocar o repositorio(repository) no final.
+            setRepositories([...repositories, repository]);
+            // Para limpar o input fazemos, pegamos o "setNewRepo" e inicializamos o seu valor.
+            setNewRepo('');
+            // Se der tudo certo, então vou dar um "setInputError" de volta
+            setInputError('');
+        } catch (err) {
+            // Se o autor/nome do repositório estiver errado,ou seja, se o "await api.get" falhar, então esta é a mensagem que será mostrada
+            setInputError('O autor/nome do repositório não está correto.😥');
+        }
 
     }
 
@@ -65,7 +84,7 @@ const Dashboard: React.FC = () => {
 
             {/* Fazendo o input e o button */}
             {/* Toda vez que acontecer um submit nesse formulário, a função "handleAddRepository" será chamada*/}
-            <Form onSubmit={handleAddRepository} >
+            <Form hasError={!!inputError} onSubmit={handleAddRepository} >
                 <input
                     value={newRepo} /* Porque é o texto que esse input vai ter */
                     // Quando o usuário altera o valor desse input eu vou receber um evento(e)
@@ -75,6 +94,10 @@ const Dashboard: React.FC = () => {
                 />
                 <button type="submit">Pesquisar</button>
             </Form>
+
+            {/* Criação de um novo componente Error para mostrar o nosso erro. Só que precisamos mostrar a componente Error só se o inputError tiver algum valor dentro dele. Para o react podemos criar uma forma de if simplificada. Uma if que só tem o valor da condicional caso ela seja satisfeita(uma if sem o else). */}
+            {/* Lê-se: Se a variável inputError está preenchida eu vou colocar/mostrar o nosso erro.*/}
+            {inputError && <Error>{inputError}</Error> }
 
             {/* Criando outro componente estilizado */}
             <Repositories>
