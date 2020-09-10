@@ -10,7 +10,8 @@ const Routes: React.FC = () => (
     <Switch>
         {/* Para cada uma das páginas da aplicação vamos ter uma rota */}
         <Route path="/" exact component={Dashboard} />
-        <Route path="/repository" component={Repository} />
+        {/* Precisamos falar que o repositório é tudo o que vem depois da barra. Para isso acrescentamos "/:repository+" */}
+        <Route path="/repositories/:repository+" component={Repository} />
     </Switch>
 );
 

@@ -1,6 +1,7 @@
 import React, { useState,useEffect, FormEvent } from 'react';
 // Importamos "FiChevronRight" depois de instalar "yarn add react-icons"
 import { FiChevronRight } from 'react-icons/fi'
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
 import logoImage from '../../assets/logo.svg';
@@ -128,7 +129,8 @@ const Dashboard: React.FC = () => {
             <Repositories>
                 {/* Agora que já já adionamos o nosso reposítório na lista, precisamos mostrá-la na tela. Para isso, vou percorrer todo o meu repositories, e para cada um desses repositóries eu vor retornar os elementos "a". Lembrando que o 1º elemento deve ter a "key"*/}
                 {repositories.map(repository => (
-                    <a key={repository.full_name} href="teste">
+                    // Só que preciso enviar por parâmetro para a rota "repository"(a rota repository do arquivo index.tsx da pasta routes) qual que é o repositório que será mostrada na tela. Atensão: Por que é que não enviamos o "id" do repositorio ao invez do nome que estamos enviando? Porque no API do GITHUB quando se quer acessar detalhes de um único repositório é pelo nome e não pelo id. Além diss, precisamos colocar "/:repository+" lá no "Route" do arquivo "index.tsx" da pasta "routes". Portanto, fazemos:
+                    <Link key={repository.full_name} to={`/repositories/${repository.full_name}`}>
                         <img
                             src={repository.owner.avatar_url}
                             alt={repository.owner.login} /* Aqui vamos usar o login do owner */
@@ -140,7 +142,7 @@ const Dashboard: React.FC = () => {
 
                         {/* instalamos "yarn add react-icons" e importamos "FiChevronRight" acima e:  */}
                         <FiChevronRight size={20} />
-                    </a>
+                    </Link>
                 ))}
 
             </Repositories>
